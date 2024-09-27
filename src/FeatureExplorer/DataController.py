@@ -6,7 +6,7 @@ from IPython.display import Audio
 import librosa.display
 import matplotlib.pyplot as plt
 import src.FeatureExtractors as fe
-import src.FeatureExplorer.RecordVisualizer as rv
+import src.RecordVisualizer as rv
 
 
 from matplotlib.colors import Normalize
@@ -129,63 +129,10 @@ class dataframe:
         
         return self.viz.get_record_viz(self.af,num_mels_filters,mel_fmax,num_mfcc_filters)
 
-        ''' 
-        #plt.clf()
-        #plt.close()
-        fig = plt.figure(figsize=(5,7), layout="constrained")
-        axs = fig.subplot_mosaic(
-            """
-            AAAA
-            BBBB
-            CCCC
-            """)
-        
-        
-        mel = librosa.display.specshow(librosa.power_to_db(S=self.af.get_melspectrogram(num_mels_filters, mel_fmax), ref=np.mean),
-                                                        y_axis='mel',fmax=mel_fmax, norm=Normalize(vmin=-20,vmax=20), ax=axs["A"])
-        
-        axs["A"].set(title='mel spectrogram')
-        axs["A"].tick_params(axis='y',labelsize=7)
-        mcb = fig.colorbar(mel,format='%+2.0f dB')
-        mcb.ax.tick_params(axis='y',labelsize=7)
-
-        mfcc = librosa.display.specshow(self.af.get_mfcc(num_mfcc_filters),norm=Normalize(vmin=-30,vmax=30), ax=axs['B'])
-        axs['B'].set(title='mfcc')
-        axs['B'].tick_params(axis='y',labelsize=7)
-        mfc = fig.colorbar(mfcc)
-        mfc.ax.tick_params(axis='y',labelsize=7)
-
-        wav = librosa.display.waveshow(self.af.get_waveform(), sr=self.af.get_sample_rate(),axis='time', ax=axs['C'])
-        axs['C'].set(title='wave')
-        axs['C'].tick_params(axis='y',labelsize=7)
-
-        fig.canvas.header_visible = False
-        
-      
-        return fig
-        '''
     def show_record_metadata(self):
         
         return self.md_vis.show_record_metadata(self.get_current_emotion(), self.get_current_actor_sex(), self.get_current_actor_id())
-        ''' 
-        cols = ['emotion','actor_sex','actor_id']
-        cells = [self.get_current_emotion(), self.get_current_actor_sex(), str(self.get_current_actor_id())]
 
-        #plt.close()
-        fig,axs = plt.subplots(figsize=(2,1))
-       
-        fig.canvas.header_visible = False
-        fig.patch.set_visible(False)
-        axs.axis('off')
-        axs.axis('tight')
-        
-        table = axs.table( colLabels=cols,cellText=[cells],loc='center')
-        table.auto_set_font_size(False)
-        table.set_fontsize(8)
-        table.scale(1.5,1.5)
-        #plt.close()
-        return fig
-        '''
     ###################################
 
     def choose_features(self,mfcc=40, mel=128):

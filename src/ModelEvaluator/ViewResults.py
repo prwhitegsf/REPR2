@@ -4,6 +4,16 @@ from sklearn.metrics import recall_score,precision_score,accuracy_score,d2_absol
 import pandas as pd
 from sklearn.svm import SVC
 import matplotlib.pyplot as plt
+import src.RecordVisualizer as rv
+
+# Results Viewer
+plt.rcParams.update({'font.size': 8})
+
+from sklearn.model_selection import cross_validate
+from sklearn.metrics import recall_score,precision_score,accuracy_score,d2_absolute_error_score
+import pandas as pd
+from sklearn.svm import SVC
+import matplotlib.pyplot as plt
 
 
 class ResultsViewer:
@@ -20,6 +30,15 @@ class ResultsViewer:
 
         self.features_train = features_train
         self.labels_train = labels_train
+
+        # Visualizers
+        self.vgr = rv.ViewGridSearchResults()
+        self.prc = rv.ViewPrecisionRecall()
+        self.vcm = rv.ViewConfusionMatrix()
+        self.vmm = rv.ViewModelMetrics()
+        self.vroc = rv.ViewROC()
+        self.vdet = rv.ViewDET()
+
 
         # Testing only
         self.features_test = features_test
@@ -62,28 +81,8 @@ class ResultsViewer:
         return cols, cell_text
 
     def print_records_to_table(self):
-       
-        cols, cell_text = self.format_top_records_table(self.get_top_records())
+        return self.vgr.print_records_to_table(self.format_top_records_table(self.get_top_records()))
 
-        fig,ax = plt.subplots(figsize=(3,3),layout="constrained")
-        fig.suptitle("Top Grid Search Results")
-        
-        fig.patch.set_visible(False)
-        ax.axis('off')
-        ax.axis('tight')
-        fig.canvas.header_visible = False
-        
-        col_widths = [0.15,0.16,0.17,0.16,0.18,0.18]
-
-        table = ax.table(cellText=cell_text,colLabels=cols,loc='center',colWidths=col_widths)
-        table.auto_set_font_size(False)
-        table.set_fontsize(8)
-        table.scale(1.5,1.5)
-        plt.close()
-        return fig
-    
-  
-  
   ####################################################################################
     
     def select_record(self,idx):
@@ -101,85 +100,60 @@ class ResultsViewer:
                    )
      
            
-
-
     def fit_model_with_record(self, rec_index=0):    
         self.model = self.apply_record_to_model(rec_index=rec_index)
         self.model = self.model.fit(self.features,self.labels)
         return self.model
        
+
     def set_testing_model(self):
         self.test_model = self.model
         self.test_mode = 1
         self.predictions = self.test_model.predict(self.features_test)
 
 
-
     def show_confusion_matrix_train(self):
-        fig,axs = plt.subplots(figsize=(3,3), layout="constrained")
-        axs.set_title("Confusion Matrix Train")
-        ConfusionMatrixDisplay.from_estimator(self.model, self.features_train, self.labels_train,ax=axs,colorbar=False)
-        plt.close()
-        return fig
+        return self.vcm.show_confusion_matrix_train(self.model,
+                                                    self.features_train,
+                                                    self.labels_train)
+   
 
     def show_confusion_matrix_test(self):
-        fig,axs = plt.subplots(figsize=(3,3), layout="constrained")
-        axs.set_title("Confusion Matrix Test")
-        if self.test_mode == 1:
-            ConfusionMatrixDisplay.from_predictions(self.labels_test,self.predictions,ax=axs,colorbar=False,cmap="magma")
-        plt.close()
-        return fig
-
+        return self.vcm.show_confusion_matrix_test(self.test_mode,
+                                                   self.labels_test,
+                                                   self.predictions)
+    
     def show_ROC(self):
+        return self.vroc.show_ROC(self.model,
+                                self.features_train,
+                                self.features_test,
+                                self.labels_train,
+                                self.labels_test,
+                                self.test_model,
+                                self.test_mode)
         
-        fig, ax = plt.subplots(figsize=(4,4),layout="constrained")
-        fig.canvas.header_visible = False
-        ax.set_title("ROC Curve")
-        RocCurveDisplay.from_estimator(self.model, self.features_train, self.labels_train,ax=ax,name="ROC Training") 
-        
-        if self.test_mode == 1:
-            pred = self.test_model.decision_function(self.features_test)
-            RocCurveDisplay.from_predictions(self.labels_test,pred,ax=ax,name="ROC Test")
-        
-        plt.ylabel('True Positive Rate')
-        plt.xlabel('False Positive Rate')
-        plt.close()
-        return fig
-
-
+      
     def show_DET(self):
-        
-        fig, ax = plt.subplots(figsize=(4,3),layout="constrained")
-        ax.set_title("DET Curve")
-        fig.canvas.header_visible = False
-        DetCurveDisplay.from_estimator(self.model, self.features_train, self.labels_train,ax=ax)
-        if self.test_mode == 1:
-            pred = self.test_model.decision_function(self.features_test)
-            DetCurveDisplay.from_predictions(self.labels_test,pred,ax=ax)
-        plt.ylabel('False Negative Rate')
-        plt.xlabel('False Positive Rate')
-        plt.close()
-        return fig
+        return self.vdet.show_DET(self.model,
+                                self.features_train,
+                                self.features_test,
+                                self.labels_train,
+                                self.labels_test,
+                                self.test_model,
+                                self.test_mode)
+
 
     def show_precision_recall(self):
-
-        fig, ax = plt.subplots(figsize=(4,3),layout="constrained")
-        fig.canvas.header_visible = False
-        ax.set_title("Precision Recall Curve (PRC)")
-        PrecisionRecallDisplay.from_estimator(self.model, self.features_train, self.labels_train,ax=ax,name="PRC Train",plot_chance_level=True) 
-        
-        if self.test_mode == 1:
-            pred = self.test_model.decision_function(self.features_test)
-            PrecisionRecallDisplay.from_predictions(self.labels_test,pred,ax=ax,name="PRC Test",plot_chance_level=True)
-        
-        plt.ylabel('True Positive Rate')
-        plt.xlabel('False Positive Rate')
-        plt.close()
-        return fig
+        return self.prc.show_precision_recall(self.model,
+                                              self.features_train,
+                                              self.features_test,
+                                              self.labels_train,
+                                              self.labels_test,
+                                              self.test_model,
+                                              self.test_mode)
 
     def get_train_metrics(self):
-        # obtain scores
-        
+      
         scoring = ['recall','precision','accuracy','d2_absolute_error_score']
         scores = cross_validate(self.model, self.features, self.labels,scoring=scoring)
         
@@ -187,9 +161,7 @@ class ResultsViewer:
         cells = []
         cells.append(round(scores['test_recall'].mean(),2))
         cells.append(round(scores['test_precision'].mean(),2))
-        
         cells.append(round(scores['test_accuracy'].mean(),2))
-        #cells.append(round(scores['test_f1_micro'].mean(),2))
         cells.append(round(scores['test_d2_absolute_error_score'].mean(),2))
 
         return cols, cells
@@ -207,39 +179,8 @@ class ResultsViewer:
         return cols, cells
     
     def show_train_metrics(self):
-        
-        cols, cell_text = self.get_train_metrics()
-        rows = ["Train Results"]
-        fig,axs = plt.subplots(figsize=(2,2))
-        fig.suptitle("Model Performance")
-        fig.canvas.header_visible = False
-        fig.patch.set_visible(False)
-        axs.axis('off')
-        axs.axis('tight')
-        
-        table = axs.table( colLabels=cols,rowLabels=rows,cellText=[cell_text],loc='center')
-        table.auto_set_font_size(False)
-        table.set_fontsize(8)
-        table.scale(1.5,1.5)
-        plt.close()
-        return fig
+        return self.vmm.show_train_metrics(self.get_train_metrics())
+
 
     def show_test_metrics(self):
-        cols , train_row = self.get_train_metrics()
-        _, test_row = self.get_test_metrics()
-        
-        
-        rows = ["Training","Testing"]
-        fig,axs = plt.subplots(figsize=(3,2))
-        fig.suptitle("Model Performance")
-        fig.canvas.header_visible = False
-        fig.patch.set_visible(False)
-        axs.axis('off')
-        axs.axis('tight')
-        
-        table = axs.table( colLabels=cols,rowLabels=rows,cellText=[train_row, test_row],loc='center')
-        table.auto_set_font_size(False)
-        table.set_fontsize(8)
-        table.scale(1.5,1.5)
-        plt.close()
-        return fig
+        return self.vmm.show_test_metrics(self.get_train_metrics(),self.get_test_metrics())
