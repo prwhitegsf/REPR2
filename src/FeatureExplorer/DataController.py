@@ -17,9 +17,9 @@ plt.ioff()
 
 class dataframe:
     
-    def __init__(self):
+    def __init__(self,metadata_csv='datasets/RAVDESS/metadata/RAVDESS.csv'):
         
-        self.unfiltered_df = pd.read_csv('datasets/RAVDESS/metadata/RAVDESS.csv',usecols=['actor','actor_sex','emotion','label','filepath'])
+        self.unfiltered_df = pd.read_csv(metadata_csv,usecols=['actor','actor_sex','emotion','label','filepath'])
         self.filtered_df = self.unfiltered_df
         self.current_record_number = 0
 
