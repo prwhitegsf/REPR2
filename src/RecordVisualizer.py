@@ -88,7 +88,7 @@ class ViewGridSearchResults:
 
         ax = self.fig.subplots()
         self.fig.suptitle("Top Grid Search Results")
-        self.fig.set_size_inches(3, 3)
+        self.fig.set_size_inches(4, 3)
         self.fig.patch.set_visible(False)
         ax.axis('off')
         ax.axis('tight')
@@ -247,11 +247,11 @@ class ViewROC:
 class ViewDET:
     
     def __init__(self):
-        self.fig = plt.figure(figsize=(4,3), layout="constrained")
+        self.fig = plt.figure(figsize=(3,3), layout="constrained")
 
     def show_DET(self,train_model,features_train,features_test,labels_train,labels_test,test_model,test_mode):
         self.fig.clf()
-        self.fig.set_size_inches(4,3)
+        self.fig.set_size_inches(3,3)
         ax = self.fig.subplots()
         ax.set_title("DET Curve")
         self.fig.canvas.header_visible = False
