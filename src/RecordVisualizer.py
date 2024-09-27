@@ -177,7 +177,7 @@ class ViewModelMetrics:
         cols = train_record[0]
         cell_text = train_record[1]
 
-        self.fig.set_size_inches(3,3)
+        self.fig.set_size_inches(2,1.25)
         rows = ["Train Results"]
         axs = self.fig.subplots()
         self.fig.suptitle("Model Performance")
@@ -196,7 +196,7 @@ class ViewModelMetrics:
     def show_test_metrics(self,train_record, test_record):
       
         self.fig.clf()
-        self.fig.set_size_inches(3,3)
+        self.fig.set_size_inches(2,1.25)
         cols = train_record[0]
         train_row = train_record[1]
         test_row = test_record[1]
