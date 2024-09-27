@@ -57,7 +57,7 @@ class RecordMetaViewer:
         
         self.fig.clf()
         axs = self.fig.subplots()
-
+        self.fig.set_size_inches(2, 1)
         cols = ['emotion','actor_sex','actor_id']
         cells = [emotion, sex, str(id)]
 
@@ -88,7 +88,7 @@ class ViewGridSearchResults:
 
         ax = self.fig.subplots()
         self.fig.suptitle("Top Grid Search Results")
-        
+        self.fig.set_size_inches(3, 3)
         self.fig.patch.set_visible(False)
         ax.axis('off')
         ax.axis('tight')
@@ -117,7 +117,7 @@ class ViewPrecisionRecall:
         self.fig.clf()
         
         ax = self.fig.subplots()
-        #self.fig.set_size_inches(4,3)
+        self.fig.set_size_inches(4,3)
         self.fig.canvas.header_visible = False
         ax.set_title("Precision Recall Curve (PRC)")
         PrecisionRecallDisplay.from_estimator(train_model, features_train, labels_train,ax=ax,name='train',plot_chance_level=True) 
@@ -146,7 +146,7 @@ class ViewConfusionMatrix:
     def show_confusion_matrix_train(self,model,features_train,labels_train):
         
         self.train_fig.clf()
-        
+        self.train_fig.set_size_inches(3,3)
         axs = self.train_fig.subplots()
         axs.set_title("Confusion Matrix Train")
         ConfusionMatrixDisplay.from_estimator(model, features_train, labels_train,ax=axs,colorbar=False)
@@ -155,6 +155,7 @@ class ViewConfusionMatrix:
     
     def show_confusion_matrix_test(self,test_mode, labels_test,predictions):
         self.test_fig.clf()
+        self.test_fig.set_size_inches(3,3)
         axs = self.test_fig.subplots()
         axs.set_title("Confusion Matrix Test")
         if test_mode == 1:
@@ -176,7 +177,7 @@ class ViewModelMetrics:
         cols = train_record[0]
         cell_text = train_record[1]
 
-       
+        self.fig.set_size_inches(3,3)
         rows = ["Train Results"]
         axs = self.fig.subplots()
         self.fig.suptitle("Model Performance")
@@ -195,7 +196,7 @@ class ViewModelMetrics:
     def show_test_metrics(self,train_record, test_record):
       
         self.fig.clf()
-
+        self.fig.set_size_inches(3,3)
         cols = train_record[0]
         train_row = train_record[1]
         test_row = test_record[1]
@@ -224,6 +225,7 @@ class ViewROC:
     def show_ROC(self,train_model,features_train,features_test,labels_train,labels_test,test_model,test_mode):
 
         self.fig.clf()
+        self.fig.set_size_inches(3,3)
         ax = self.fig.subplots()
         ax.set_title("ROC Curve")
         RocCurveDisplay.from_estimator(train_model, features_train, labels_train,ax=ax,name="train") 
@@ -249,6 +251,7 @@ class ViewDET:
 
     def show_DET(self,train_model,features_train,features_test,labels_train,labels_test,test_model,test_mode):
         self.fig.clf()
+        self.fig.set_size_inches(3,3)
         ax = self.fig.subplots()
         ax.set_title("DET Curve")
         self.fig.canvas.header_visible = False
