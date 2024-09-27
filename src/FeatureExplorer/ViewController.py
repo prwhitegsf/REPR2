@@ -23,7 +23,16 @@ def view_feature_controls(df):
                     align_items='center',
                     width='100%')
 
+    justify = widgets.Layout(display='flex',
+                    flex_flow='row',
+                    justify_content='space-around',
+                    width='100%')
 
+    splitter_layout = widgets.Layout(display='flex',
+                    flex_flow='row',
+                    justify_content='center',
+                    border='solid',
+                    width='100%')
 
     # Filters / Inputs
 
@@ -70,7 +79,7 @@ def view_feature_controls(df):
         min=3, # min exponent of base
         max=8, # max exponent of base
         step=1, # exponent step
-        description='Mel Filter Count'
+        description='# mel filters'
     )
 
 
@@ -79,7 +88,7 @@ def view_feature_controls(df):
         min=20, # min exponent of base
         max=120, # max exponent of base
         step=20, # exponent step
-        description='MFCC Filter Count'
+        description='# mfcc filters'
     )
 
     # Send filter settings to controller and request new data
@@ -88,33 +97,35 @@ def view_feature_controls(df):
     # Get the next record in the filtered subset
     nextbutton = widgets.Button(description='Next Record')
 
-    split_test_ratio = widgets.FloatSlider(value=0.4,min=0.2,max=0.6,step=0.1,description="Size of Test Set",readout=True,readout_format='.1f')
-    split_data = widgets.Button(description="Split Data")
+
+    # Splitting the data
+    split_label = widgets.Label(value='Select proportion of data to hold for testing',layout=center_align)
+
+    split_test_ratio = widgets.FloatSlider(value=0.4,min=0.2,max=0.6,step=0.1,description="",readout=True,readout_format='.1f')
+    split_data = widgets.Button(description="Split Data",layout=center_align)
 
     # Outputs
     sample_metadata_record = widgets.Output()
-    audio_player_output =widgets.Output()
-    spectrograms_output =widgets.Output() 
-    plt.ioff()
+    audio_player_output = widgets.Output()
+    data_splitter_output = widgets.Output()
+    spectrograms_output = widgets.Output() 
+
+ 
 
 
-    # Display Current Record
-    curr_emotion = widgets.Label(value="Current Sample Emotion:  "+ df.get_current_emotion(),
-                                layout=left_align)
-    curr_actor_sex = widgets.Label(value="Current Sample Actor Sex :  "+ df.get_current_actor_sex(),
-                                layout=left_align)
-    curr_actor_id = widgets.Label(value="Current Sample Actor ID :  "+ str(df.get_current_actor_id()),
-                                layout=left_align)
     sample_position_in_set = widgets.Label(value="Sample : "+ str(df.get_current_record_number()) +" of "+ str(df.get_num_samples()),
                                 layout=left_align)
 
     # initial record display on load
     def initial_outputs(df):
         with sample_metadata_record:
-            display(curr_emotion,curr_actor_sex,curr_actor_id,sample_position_in_set,split_test_ratio,split_data)
+            display(df.show_record_metadata(),sample_position_in_set)
 
         with audio_player_output:    
             display(df.get_record_audio())
+
+        with data_splitter_output:
+            display(split_label,split_test_ratio,split_data)
 
         with spectrograms_output:
             fig = df.get_record_viz(int(num_mel_filters.value), 8000,int(num_mfcc_filters.value)) 
@@ -130,24 +141,19 @@ def view_feature_controls(df):
         #print("here")
         with sample_metadata_record:
             
-            sample_metadata_record.clear_output()
+            sample_metadata_record.clear_output(wait=True)
             dfx.apply_filters(emotion_list=emotion_menu.value, sex=actor_sex_menu.value,ids=actor_ids_menu.value)
-            
-            
-            curr_emotion.value="Current Sample Emotion:  " + df.get_current_emotion()
-            curr_actor_sex.value="Current Sample Actor Sex :  " + df.get_current_actor_sex()
-            curr_actor_id.value="Current Sample Actor ID : "+ str(df.get_current_actor_id())
             sample_position_in_set.value="Sample : "+ str(df.get_current_record_number()) +" of "+ str(df.get_num_samples())  
             
-            display(curr_emotion,curr_actor_sex,curr_actor_id,sample_position_in_set,split_test_ratio,split_data)
+            display(df.show_record_metadata(),sample_position_in_set)
         
 
         with audio_player_output:
-            audio_player_output.clear_output()    
+            audio_player_output.clear_output(wait=True)    
             display(df.get_record_audio())
 
         with spectrograms_output:
-            spectrograms_output.clear_output() 
+            spectrograms_output.clear_output(wait=True) 
             fig = df.get_record_viz(int(num_mel_filters.value), 8000,int(num_mfcc_filters.value))   
             display(fig.canvas)
         
@@ -156,19 +162,17 @@ def view_feature_controls(df):
         #fig = df.write_mel_spectro(int(num_mel_filters.value), 8000,int(num_mfcc_filters.value))
         with sample_metadata_record:
             dfx.get_next_record()
-            sample_metadata_record.clear_output()
-            curr_emotion.value="Current Sample Emotion:  " + df.get_current_emotion()
-            curr_actor_sex.value="Current Sample Actor Sex :  " + df.get_current_actor_sex()
-            curr_actor_id.value="Current Sample Actor ID : "+ str(df.get_current_actor_id())
+            sample_metadata_record.clear_output(wait=True)
             sample_position_in_set.value="Sample : "+ str(df.get_current_record_number()) +" of "+ str(df.get_num_samples())  
-            display(curr_emotion,curr_actor_sex,curr_actor_id,sample_position_in_set,split_test_ratio,split_data)
+            
+            display(df.show_record_metadata(),sample_position_in_set)
         
         with audio_player_output:
-            audio_player_output.clear_output()    
+            audio_player_output.clear_output(wait=True)    
             display(df.get_record_audio())
 
         with spectrograms_output:
-            spectrograms_output.clear_output()
+            spectrograms_output.clear_output(wait=True)
             fig = df.get_record_viz(int(num_mel_filters.value), 8000,int(num_mfcc_filters.value))   
             display(fig.canvas)
 
@@ -181,27 +185,21 @@ def view_feature_controls(df):
         df.random_split(sdf,test_percentage)
 
         with audio_player_output:
-            audio_player_output.clear_output()    
+            audio_player_output.clear_output(wait=True)    
             display("Data Split! Head to the next cell.")
 
 
     update_filters.on_click(partial(update_filters_handler, df))
     nextbutton.on_click(partial(next_record_handler, df))
-
-
-
-
-
     split_data.on_click(partial(split_data_handler,df))
 
 
     filter_sliders=widgets.VBox([num_mel_filters, num_mfcc_filters])
-
-
-
     audio_player_box = widgets.HBox(children=[audio_player_output],layout=center_align)
-    metadata_box = widgets.VBox(children=[sample_metadata_record],layout = left_align)
+    metadata_box = widgets.VBox(children=[sample_metadata_record],layout = center_align)
     buttons_box = widgets.HBox(children=[update_filters, nextbutton])
+
+    splitter_box = widgets.VBox([data_splitter_output])
 
     control_box = widgets.VBox([emotion_menu_label,
                             emotion_menu,
@@ -211,8 +209,11 @@ def view_feature_controls(df):
                             actor_ids_menu,
                             filter_sliders,
                             buttons_box,
-                            metadata_box,audio_player_box])
+                            metadata_box,
+                            audio_player_box,
+                            splitter_box
+                            ])
 
     view_box = widgets.Box(children=[spectrograms_output], 
                             layout=left_align)
-    return widgets.HBox([control_box,view_box])
+    return widgets.HBox([control_box,view_box],layout=justify)

@@ -6,6 +6,9 @@ from IPython.display import Audio
 import librosa.display
 import matplotlib.pyplot as plt
 import src.FeatureExtractors as fe
+import src.FeatureExplorer.RecordVisualizer as rv
+
+
 from matplotlib.colors import Normalize
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -30,6 +33,8 @@ class dataframe:
         self.labels_train = []
         self.labels_test=[]
 
+        self.viz = rv.SpectroVisualizer()
+        self.md_vis = rv.RecordMetaViewer()
 
 
     def apply_actor_sex_filter(self,sex='all'):
@@ -122,8 +127,11 @@ class dataframe:
     
     def get_record_viz(self,num_mels_filters=128, mel_fmax=8000, num_mfcc_filters=40):
         
-        plt.clf()
-        plt.ioff() 
+        return self.viz.get_record_viz(self.af,num_mels_filters,mel_fmax,num_mfcc_filters)
+
+        ''' 
+        #plt.clf()
+        #plt.close()
         fig = plt.figure(figsize=(5,7), layout="constrained")
         axs = fig.subplot_mosaic(
             """
@@ -153,8 +161,31 @@ class dataframe:
 
         fig.canvas.header_visible = False
         
+      
         return fig
-    
+        '''
+    def show_record_metadata(self):
+        
+        return self.md_vis.show_record_metadata(self.get_current_emotion(), self.get_current_actor_sex(), self.get_current_actor_id())
+        ''' 
+        cols = ['emotion','actor_sex','actor_id']
+        cells = [self.get_current_emotion(), self.get_current_actor_sex(), str(self.get_current_actor_id())]
+
+        #plt.close()
+        fig,axs = plt.subplots(figsize=(2,1))
+       
+        fig.canvas.header_visible = False
+        fig.patch.set_visible(False)
+        axs.axis('off')
+        axs.axis('tight')
+        
+        table = axs.table( colLabels=cols,cellText=[cells],loc='center')
+        table.auto_set_font_size(False)
+        table.set_fontsize(8)
+        table.scale(1.5,1.5)
+        #plt.close()
+        return fig
+        '''
     ###################################
 
     def choose_features(self,mfcc=40, mel=128):
