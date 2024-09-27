@@ -1,6 +1,6 @@
 from sklearn.metrics import ConfusionMatrixDisplay,RocCurveDisplay,PrecisionRecallDisplay,DetCurveDisplay
 from sklearn.model_selection import cross_validate
-from sklearn.metrics import recall_score,precision_score,f1_score,hinge_loss,accuracy_score,d2_absolute_error_score
+from sklearn.metrics import recall_score,precision_score,accuracy_score,d2_absolute_error_score
 import pandas as pd
 from sklearn.svm import SVC
 import matplotlib.pyplot as plt

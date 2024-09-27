@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import src.FeatureExplorer.DataController as datacontrol
 import pandas as pd
 
-df = datacontrol.dataframe()
+
 
 
 def view_feature_controls(df):
