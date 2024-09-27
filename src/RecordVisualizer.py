@@ -150,7 +150,7 @@ class ViewConfusionMatrix:
         axs = self.train_fig.subplots()
         axs.set_title("Confusion Matrix Train")
         ConfusionMatrixDisplay.from_estimator(model, features_train, labels_train,ax=axs,colorbar=False)
-       
+        self.train_fig.tight_layout()
         return self.train_fig
     
     def show_confusion_matrix_test(self,test_mode, labels_test,predictions):
@@ -160,7 +160,7 @@ class ViewConfusionMatrix:
         axs.set_title("Confusion Matrix Test")
         if test_mode == 1:
             ConfusionMatrixDisplay.from_predictions(labels_test,predictions,ax=axs,colorbar=False,cmap="magma")
-      
+        self.test_fig.tight_layout()
         return self.test_fig
 
 
@@ -185,12 +185,12 @@ class ViewModelMetrics:
         self.fig.patch.set_visible(False)
         axs.axis('off')
         axs.axis('tight')
-        
+        self.fig.tight_layout()
         table = axs.table( colLabels=cols,rowLabels=rows,cellText=[cell_text],loc='center')
         table.auto_set_font_size(False)
         table.set_fontsize(8)
         table.scale(1.5,1.5)
-       
+        
         return self.fig
 
     def show_test_metrics(self,train_record, test_record):
@@ -208,12 +208,12 @@ class ViewModelMetrics:
         self.fig.patch.set_visible(False)
         axs.axis('off')
         axs.axis('tight')
-        
+        self.fig.tight_layout()
         table = axs.table( colLabels=cols,rowLabels=rows,cellText=[train_row, test_row],loc='center')
         table.auto_set_font_size(False)
         table.set_fontsize(8)
         table.scale(1.5,1.5)
-     
+        
         return self.fig
 
 class ViewROC:
