@@ -153,7 +153,7 @@ def eval_controller(tr):
 
     initialize()
 
-
+    outbox_layout  = widgets.Layout()
 
     rec_sel_dropdown.observe(partial(select_record_to_view,tr),names='value')
     run_oos_button.on_click(partial(test_model_on_oos, tr))

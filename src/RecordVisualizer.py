@@ -77,7 +77,7 @@ class RecordMetaViewer:
 class ViewGridSearchResults:
     
     def __init__(self):
-        self.fig  = plt.figure(figsize=(3,3))
+        self.fig  = plt.figure(figsize=(4,3))
 
     def print_records_to_table(self, records):
         
@@ -100,7 +100,7 @@ class ViewGridSearchResults:
         table = ax.table(cellText=cell_text,colLabels=cols,loc='center',colWidths=col_widths)
         table.auto_set_font_size(False)
         table.set_fontsize(8)
-        table.scale(1.5,1.5)
+        table.scale(1.0,1.5)
        
         return self.fig
 
@@ -140,8 +140,8 @@ class ViewPrecisionRecall:
 class ViewConfusionMatrix:
     
     def __init__(self):
-        self.train_fig = plt.figure(figsize=(3,3))
-        self.test_fig = plt.figure(figsize=(3,3))
+        self.train_fig = plt.figure(figsize=(4,3))
+        self.test_fig = plt.figure(figsize=(4,3))
 
     def show_confusion_matrix_train(self,model,features_train,labels_train):
         
@@ -219,13 +219,13 @@ class ViewModelMetrics:
 class ViewROC:
 
     def __init__(self):
-        self.fig = plt.figure(figsize=(4,4))
+        self.fig = plt.figure(figsize=(4,3),layout="constrained")
 
 
     def show_ROC(self,train_model,features_train,features_test,labels_train,labels_test,test_model,test_mode):
 
         self.fig.clf()
-        self.fig.set_size_inches(3,3)
+        self.fig.set_size_inches(4,3)
         ax = self.fig.subplots()
         ax.set_title("ROC Curve")
         RocCurveDisplay.from_estimator(train_model, features_train, labels_train,ax=ax,name="train") 
@@ -251,7 +251,7 @@ class ViewDET:
 
     def show_DET(self,train_model,features_train,features_test,labels_train,labels_test,test_model,test_mode):
         self.fig.clf()
-        self.fig.set_size_inches(3,3)
+        self.fig.set_size_inches(4,3)
         ax = self.fig.subplots()
         ax.set_title("DET Curve")
         self.fig.canvas.header_visible = False
@@ -264,3 +264,4 @@ class ViewDET:
         ax.set_xlabel('False Positive Rate')
         self.fig.tight_layout()
         return self.fig
+    

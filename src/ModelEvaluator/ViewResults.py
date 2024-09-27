@@ -40,6 +40,8 @@ class ResultsViewer:
         self.vdet = rv.ViewDET()
 
 
+
+
         # Testing only
         self.features_test = features_test
         self.labels_test = labels_test
@@ -151,6 +153,7 @@ class ResultsViewer:
                                               self.labels_test,
                                               self.test_model,
                                               self.test_mode)
+
 
     def get_train_metrics(self):
       
