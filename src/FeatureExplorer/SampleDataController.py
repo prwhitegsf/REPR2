@@ -28,6 +28,9 @@ class SampleData:
 
         self.af = fe.AudioFeatures(self.filtered_df.iloc[self.current_record_number]) 
 
+        self.manual_test_mode = 0
+        self.manual_test_set = None
+
         self.features_train =[]
         self.features_test=[]
         self.labels_train = []
@@ -35,6 +38,12 @@ class SampleData:
 
         self.viz = rv.SpectroVisualizer()
         self.md_vis = rv.RecordMetaViewer()
+
+        self.scaler = StandardScaler()
+
+
+        self.mfcc_filter_count = 40
+        self.mel_filter_count = 128
 
 
     def apply_actor_sex_filter(self,sex='all'):
@@ -45,7 +54,7 @@ class SampleData:
     def apply_emotion_filter(self,emotion_list):
       
         if emotion_list[0] != 'all':
-            self.filtered_df = self.unfiltered_df[self.unfiltered_df.emotion.isin(emotion_list)]
+            self.filtered_df = self.filtered_df[self.filtered_df.emotion.isin(emotion_list)]
 
     def apply_actorID_filter(self, ids):
         if ids[0] != 'all':
@@ -56,7 +65,12 @@ class SampleData:
         
 
         # start with the full set
-        self.filtered_df = self.unfiltered_df.copy()
+        if self.manual_test_mode == 0:
+            self.filtered_df = self.unfiltered_df.copy()
+        else:
+            self.filtered_df = self.manual_test_set.copy()
+
+
 
         self.current_record_number = 0
         
@@ -81,6 +95,9 @@ class SampleData:
     def get_num_samples(self):
         return len(self.filtered_df)
     
+    def set_to_manual_testing(self):
+        self.filtered_df = self.manual_test_set
+    
     def get_record_by_index(self,idx=0):
         if idx < self.get_num_samples() and idx >= 0:
             return self.filtered_df.iloc[idx:idx+1][['actor','actor_sex','emotion','label']]
@@ -97,6 +114,12 @@ class SampleData:
         
     def get_current_record_number(self):
         return self.current_record_number
+    
+    def get_current_record(self):
+        if self.current_record_number < self.get_num_samples():
+            return self.filtered_df.iloc[self.current_record_number]
+        else:
+            return [-1]
     
     def get_current_emotion(self):
         
@@ -137,24 +160,32 @@ class SampleData:
     ###################################
 
     def choose_features(self,mfcc=40, mel=128):
-        scaler = StandardScaler()
-        #features = scaler.fit_transform(features)
+        
+        
+        self.mfcc_filter_count = mfcc
+        self.mel_filter_count = mel
         # mfcc only
         if mfcc != 'None' and mel == 'None':
-            return scaler.fit_transform(np.load(f'datasets/RAVDESS/features/mfcc/mfcc{mfcc}.npy'))
+            return self.scaler.fit_transform(np.load(f'datasets/RAVDESS/features/mfcc/mfcc{mfcc}.npy'))
         # mels only
         elif mfcc == 'None' and mel != 'None':
-            return scaler.fit_transform(np.load(f'datasets/RAVDESS/features/mel/mel{mel}.npy'))
+            return self.sscaler.fit_transform(np.load(f'datasets/RAVDESS/features/mel/mel{mel}.npy'))
         # both
         elif mfcc != 'None' and mel != 'None':
             mfcc_frame = np.load(f'datasets/RAVDESS/features/mfcc/mfcc{mfcc}.npy')
             mel_frame = np.load(f'datasets/RAVDESS/features/mel/mel{mel}.npy')
             feature_matrix=np.array([])
             feature_matrix = np.hstack((mfcc_frame, mel_frame))
-            return scaler.fit_transform(feature_matrix)
+            return self.scaler.fit_transform(feature_matrix)
         
     def random_split(self,df,test_size=0.2):
-        labels = np.array(df['label'])
-        features = np.vstack(df['features'])
+        
+        dfx = df.copy()
+        dfx = dfx[dfx['actor'] > 2]
+        print(len(dfx))
+        self.manual_test_set = df[df['actor'] <= 2].copy()
+        self.manual_test_mode = 1
+        labels = np.array(dfx['label'])
+        features = np.vstack(dfx['features'])
         self.features_train,self.features_test,self.labels_train,self.labels_test = train_test_split(features, labels,test_size=test_size)
         

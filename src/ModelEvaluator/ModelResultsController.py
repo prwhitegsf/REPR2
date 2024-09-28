@@ -111,6 +111,9 @@ class ResultsViewer:
         self.test_mode = 1
         self.predictions = self.test_model.predict(self.features_test)
 
+    def get_model_used_for_test(self):
+        return self.test_model
+
 
     def show_confusion_matrix_train(self):
         return self.vcm.show_confusion_matrix_train(self.model,
