@@ -18,7 +18,7 @@ def eval_controller(tr):
     stretch_roc = widgets.Layout(display='flex',
                     flex_flow='column',
                     align_items='center',
-                    align_content='center',
+                    align_content='stretch',
                     justify_content='center',
                     width='30%')
 
