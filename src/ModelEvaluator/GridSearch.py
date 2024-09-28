@@ -9,6 +9,14 @@ class GridCV:
 
     def __init__(self, df):
 
+        # check if data has been split, if not, run the split here w/ a default setting
+        if len(df.features_train) == 0:
+            sdf = df.get_unfiltered_data()
+            sdf['features'] = list(df.choose_features(40,128))
+            test_percentage = 0.4
+            df.random_split(sdf,test_percentage)
+            print("auto-splitting: mels = 128, mfcc = 40, split 60/40 training/testing")
+
         self.features_train = df.features_train
         self.label_train = df.labels_train
 
