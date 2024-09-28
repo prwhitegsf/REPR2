@@ -17,8 +17,8 @@ def eval_controller(tr):
 
     stretch_roc = widgets.Layout(display='flex',
                     flex_flow='column',
-                    align_items='stretch',
-                    align_content='flex-start',
+                    align_items='center',
+                    align_content='center',
                     justify_content='center',
                     width='30%')
 
@@ -38,11 +38,17 @@ def eval_controller(tr):
                     flex_flow='column',
                     align_items='stretch',
                     align_content='center',
-                    width='100%',
+                    width='90%',
                     justify_content='center',
-                    margin='0px 0px 0px 10px')
+                    margin='0px 0px 0px 0px')
 
     top_row_layout = widgets.Layout(display='flex',
+                    flex_flow='row',
+                    align_content='flex-start',
+                    width='100%',
+                    justify_content='flex-start')
+    
+    bottom_row_layout = widgets.Layout(display='flex',
                     flex_flow='row',
                     align_content='flex-start',
                     width='100%',
@@ -58,24 +64,25 @@ def eval_controller(tr):
 
     cm_layout = widgets.Layout(display='flex',
                     flex_flow='row',
-                    align_content='center',
+                    align_content='stretch',
                     align_items='stretch',
                     width='35%',
-                    justify_content='center',
+                    justify_content='flex-start',
                     margin='10px 10px 0px 0px')
 
     det_layout = widgets.Layout(display='flex',
-                    flex_flow='column',
-                    align_content='flex-start',
-                    align_items='stretch',
+                   
+                    flex_flow='row',
+                    align_content='center',
+                    align_items='center',
                     width='30%',
-                    justify_content='flex-start',
+                    justify_content='center',
                     margin='10px 0px 0px 0px')
 
     oos_test_layout = widgets.Layout(display='flex',
                     flex_flow='column',
                     align_items='center',
-                    width='30%',
+                    width='20%',
                     justify_content='center')
 
 
@@ -124,13 +131,13 @@ def eval_controller(tr):
 
     record_selection_box = widgets.HBox([rec_sel_label,rec_sel_dropdown],layout=rec_sel_dropdown_layout)
 
-    row_one_chart_box = widgets.HBox([record_out, stats_out,roc_out],layout=top_row_layout)
+    row_one_chart_box = widgets.HBox([record_out, roc_out,stats_out],layout=top_row_layout)
 
     cm_box = widgets.HBox([cm_out,cm2_out],layout=cm_layout)
 
     prec_test_box = widgets.VBox([prec_recall_out],layout=prec_test_layout)
 
-    row_two_chart_box = widgets.HBox([prec_test_box,cm_box,det_out])
+    row_two_chart_box = widgets.HBox([prec_test_box,det_out,cm_box])
 
 
 
