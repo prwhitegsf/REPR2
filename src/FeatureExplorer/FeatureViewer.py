@@ -40,9 +40,9 @@ def view_feature_controls(df):
                     flex_flow='column',
                     align_content='center',
                     align_items='center',
-                    width='90%',
+                    width='100%',
                     justify_content='center',
-                    margin='15px 15px 15px 15px')
+                    margin='15px 0px 15px 0px')
 
 
     # Filters 
@@ -101,8 +101,8 @@ def view_feature_controls(df):
     # Get the next record in the filtered subset
     nextbutton = widgets.Button(description='Next Record',
                                 style=dict(
-                                button_color='lightgreen',
-                                text_color='black',
+                                button_color='darkgreen',
+                                text_color='white',
                                 font_weight='bold'))
 
     # show the sample number and the total count according to the filter
