@@ -26,7 +26,7 @@ def view_feature_controls(df):
     justify = widgets.Layout(display='flex',
                     flex_flow='row',
                     justify_content='space-around',
-                    width='100%')
+                    width='75%')
 
     splitter_layout = widgets.Layout(display='flex',
                     flex_flow='row',
@@ -36,7 +36,7 @@ def view_feature_controls(df):
 
     # Filters / Inputs
 
-    emotion_menu_label = widgets.VBox(children=[widgets.Label(value="Emotions")])
+    emotion_menu_label = widgets.VBox(children=[widgets.Label(value="Emotions",style=dict(font_weight='bold'))])
     emotion_set =['all','neutral', 'calm', 'happy','sad','angry','fearful','disgust','surpised']
     emotion_menu = widgets.SelectMultiple(
         options=emotion_set,
@@ -48,7 +48,7 @@ def view_feature_controls(df):
     )
 
 
-    actor_sex_menu_label =widgets.Label(value="Actor Sex", layout = widgets.Layout(grid_area='asex'))
+    actor_sex_menu_label =widgets.Label(value="Actor Sex", layout = widgets.Layout(grid_area='asex'),style=dict(font_weight='bold'))
     actor_sex_menu = widgets.Dropdown(
         options=['all','male', 'female'],
         value='all',
@@ -58,7 +58,7 @@ def view_feature_controls(df):
     )
 
 
-    actor_id_menu_label = widgets.Label(value="Actor ID")
+    actor_id_menu_label = widgets.Label(value="Actor ID",style=dict(font_weight='bold'))
     actors_id_list = ['all']
     for i in range(23):
         actors_id_list.append(str(i+1))
@@ -92,22 +92,53 @@ def view_feature_controls(df):
     )
 
     # Send filter settings to controller and request new data
-    update_filters = widgets.Button(description='Apply Filters',layout=Layout(align='right'))
+    update_filters = widgets.Button(description='Apply Filters',layout=Layout(align='right'),style=dict(
+    button_color='blue',
+    text_color='white',
+    font_weight='bold'
+    ))
 
     # Get the next record in the filtered subset
-    nextbutton = widgets.Button(description='Next Record')
+    nextbutton = widgets.Button(description='Next Record',style=dict(
+    button_color='lightgreen',
+    text_color='black',
+    font_weight='bold'
+    ))
 
 
     # Splitting the data
-    split_label = widgets.Label(value='Select proportion of data to hold for testing',layout=center_align)
+    split_label = widgets.Label(value='Select proportion of data to hold for testing',layout=center_align,style=dict(
+    background='lightblue',
+    text_color='black',
+    font_weight='bold'
+    ))
 
     split_test_ratio = widgets.FloatSlider(value=0.4,min=0.2,max=0.6,step=0.1,description="",readout=True,readout_format='.1f')
-    split_data = widgets.Button(description="Split Data",layout=center_align)
+    split_data = widgets.Button(description="Split Data",layout=center_align,style=dict(
+    button_color='darkred',
+    text_color='white',
+    font_weight='bold'
+    ))
 
+
+    md_layout = widgets.Layout(display='flex',
+                    flex_flow='column',
+                    align_content='flex-start',
+                    align_items='flex-start',
+                  
+                    justify_content='flex-start')
+
+    ds_layout = widgets.Layout(display='flex',
+                    flex_flow='column',
+                    align_content='center',
+                    align_items='center',
+                    width='90%',
+                    justify_content='center',
+                    margin='15px 15px 15px 15px')
     # Outputs
     sample_metadata_record = widgets.Output()
     audio_player_output = widgets.Output()
-    data_splitter_output = widgets.Output()
+    data_splitter_output = widgets.Output(layout=ds_layout)
     spectrograms_output = widgets.Output() 
 
  
@@ -195,8 +226,8 @@ def view_feature_controls(df):
 
 
     filter_sliders=widgets.VBox([num_mel_filters, num_mfcc_filters])
-    audio_player_box = widgets.HBox(children=[audio_player_output],layout=center_align)
-    metadata_box = widgets.VBox(children=[sample_metadata_record],layout = center_align)
+    audio_player_box = widgets.HBox(children=[audio_player_output])
+    metadata_box = widgets.VBox(children=[sample_metadata_record])
     buttons_box = widgets.HBox(children=[update_filters, nextbutton])
 
     splitter_box = widgets.VBox([data_splitter_output])
@@ -212,8 +243,7 @@ def view_feature_controls(df):
                             metadata_box,
                             audio_player_box,
                             splitter_box
-                            ])
+                            ],layout=md_layout)
 
-    view_box = widgets.Box(children=[spectrograms_output], 
-                            layout=left_align)
+    view_box = widgets.Box(children=[spectrograms_output])
     return widgets.HBox([control_box,view_box],layout=justify)

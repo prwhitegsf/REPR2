@@ -57,7 +57,7 @@ class RecordMetaViewer:
         
         self.fig.clf()
         axs = self.fig.subplots()
-        self.fig.set_size_inches(2, 1)
+        self.fig.set_size_inches(2.2, 1)
         cols = ['emotion','actor_sex','actor_id']
         cells = [emotion, sex, str(id)]
 
@@ -65,7 +65,7 @@ class RecordMetaViewer:
         self.fig.patch.set_visible(False)
         axs.axis('off')
         axs.axis('tight')
-        
+        self.fig.tight_layout()
         table = axs.table( colLabels=cols,cellText=[cells],loc='center')
         table.auto_set_font_size(False)
         table.set_fontsize(8)
@@ -129,8 +129,9 @@ class ViewPrecisionRecall:
         #ax.set_box_aspect(0.7)
         ax.set_ylabel('Precision')
         ax.set_xlabel('Recall')
-        ax.legend(bbox_to_anchor=(0.1, -0.1), loc='upper left', borderaxespad=0)
-
+        ax.xaxis.set_label_coords(0.6, -.15)
+        
+        ax.legend(bbox_to_anchor=(-0.1, -0.13), loc='upper left', borderaxespad=0.1)
 
         self.fig.tight_layout()
         return self.fig
@@ -148,7 +149,8 @@ class ViewConfusionMatrix:
         self.train_fig.clf()
         self.train_fig.set_size_inches(3,3)
         axs = self.train_fig.subplots()
-        axs.set_title("Confusion Matrix Train")
+        axs.set_title("Confusion Matrix Train",fontsize=12)
+        
         ConfusionMatrixDisplay.from_estimator(model, features_train, labels_train,ax=axs,colorbar=False)
         self.train_fig.tight_layout()
         return self.train_fig
@@ -157,7 +159,7 @@ class ViewConfusionMatrix:
         self.test_fig.clf()
         self.test_fig.set_size_inches(3,3)
         axs = self.test_fig.subplots()
-        axs.set_title("Confusion Matrix Test")
+        axs.set_title("Confusion Matrix Test",fontsize=12)
         if test_mode == 1:
             ConfusionMatrixDisplay.from_predictions(labels_test,predictions,ax=axs,colorbar=False,cmap="magma")
         self.test_fig.tight_layout()
@@ -196,7 +198,7 @@ class ViewModelMetrics:
     def show_test_metrics(self,train_record, test_record):
       
         self.fig.clf()
-        self.fig.set_size_inches(2,1.25)
+        self.fig.set_size_inches(2,1.5)
         cols = train_record[0]
         train_row = train_record[1]
         test_row = test_record[1]

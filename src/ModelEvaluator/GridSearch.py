@@ -12,7 +12,6 @@ class GridCV:
         self.features_train = df.features_train
         self.label_train = df.labels_train
 
-    # 0.1,0.5,0.8,
     def perform_gridsearch(self):
         param_grid={
             "C" : [0.1,0.5,0.8,1.0,1.2,1.5,2],

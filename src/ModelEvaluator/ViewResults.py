@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import src.RecordVisualizer as rv
 
 # Results Viewer
-plt.rcParams.update({'font.size': 8})
+#plt.rcParams.update({'font.size': 8})
 
 from sklearn.model_selection import cross_validate
 from sklearn.metrics import recall_score,precision_score,accuracy_score,d2_absolute_error_score
